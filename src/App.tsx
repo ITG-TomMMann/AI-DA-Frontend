@@ -17,10 +17,10 @@ function App() {
     isLoading: false,
     error: null,
   });
-  
+
   // State for tracking the nl2sql session
   const [nl2sqlSessionId, setNl2sqlSessionId] = useState<string | null>(null);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,7 +30,12 @@ function App() {
     scrollToBottom();
   }, [state.messages]);
 
+  // Read the backend base URL from Vite env
+  // e.g., "http://127.0.0.1:8000" in dev, or "https://my-fastapi-service-abc123-REGION.run.app" in production
+  const backendBaseUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
+
   const handleSendMessage = async (content: string) => {
+    // Create a new user message
     const newMessage: Message = {
       id: Date.now().toString(),
       content,
@@ -39,7 +44,8 @@ function App() {
       type: activeTab,
     };
 
-    setState(prev => ({
+    // Update state to show the new message and set loading
+    setState((prev) => ({
       ...prev,
       messages: [...prev.messages, newMessage],
       isLoading: true,
@@ -50,22 +56,23 @@ function App() {
       let endpoint = '';
       let payload: any = {};
 
-      // Endpoint logic for nl2sql and ga4
+      // Distinguish endpoints by active tab
       if (activeTab === 'nl2sql') {
         if (!nl2sqlSessionId) {
-          // First message: use /query endpoint
-          endpoint = 'http://127.0.0.1:8000/query';
+          // First message => /query
+          endpoint = `${backendBaseUrl}/query`;
           payload = { query: content };
         } else {
-          // Follow-up message: use /followup endpoint
-          endpoint = 'http://127.0.0.1:8000/followup';
+          // Follow-up => /followup
+          endpoint = `${backendBaseUrl}/followup`;
           payload = { follow_up_query: content, session_id: nl2sqlSessionId };
         }
       } else if (activeTab === 'ga4') {
-        endpoint = 'http://127.0.0.1:8000/ga4';
+        endpoint = `${backendBaseUrl}/ga4`;
         payload = { message: content };
       }
 
+      // Explicitly use POST
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -78,12 +85,12 @@ function App() {
 
       const data = await response.json();
 
-      // Store the session ID if provided (nl2sql)
+      // If the server returns a session_id for nl2sql, store it
       if (activeTab === 'nl2sql' && data.session_id) {
         setNl2sqlSessionId(data.session_id);
       }
 
-      // Use either data.response or data.sql as the answer
+      // Use data.response or data.sql as the returned message
       const assistantAnswer = data.response || data.sql || 'No response found.';
       const newAssistantMessage: Message = {
         id: Date.now().toString(),
@@ -93,14 +100,15 @@ function App() {
         type: activeTab,
       };
 
-      setState(prev => ({
+      // Update state with the assistant’s reply
+      setState((prev) => ({
         ...prev,
         messages: [...prev.messages, newAssistantMessage],
         isLoading: false,
       }));
     } catch (error) {
       console.error(error);
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: 'Failed to get response. Please try again.',
@@ -108,7 +116,7 @@ function App() {
     }
   };
 
-  // Clear both the chat messages and the nl2sql session
+  // Clear chat + reset session
   const handleClearChat = () => {
     setState({
       messages: [],
@@ -120,7 +128,7 @@ function App() {
 
   // Filter messages based on the active tab
   const filteredMessages = state.messages.filter(
-    message => message.type === activeTab
+    (message) => message.type === activeTab
   );
 
   return (
@@ -138,13 +146,14 @@ function App() {
                 {filteredMessages.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-gray-500">
                     <p>
-                      Start a conversation with your {activeTab === 'nl2sql' ? 'SQL Query' : 'GA4 Event'} Assistant
+                      Start a conversation with your{' '}
+                      {activeTab === 'nl2sql' ? 'SQL Query' : 'GA4 Event'} Assistant
                     </p>
                   </div>
                 ) : (
                   <>
                     <div className="max-w-4xl mx-auto w-full">
-                      {filteredMessages.map(message => (
+                      {filteredMessages.map((message) => (
                         <ChatMessage key={message.id} message={message} />
                       ))}
                       {state.isLoading && <LoadingIndicator />}
