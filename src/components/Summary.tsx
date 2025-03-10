@@ -37,13 +37,13 @@ export function Summary() {
           <h2 className="text-2xl font-semibold">3. 💰 Financial Analysis</h2>
           <ul className="list-disc pl-6">
             <li className="mb-2">
-              <strong>Operational Costs:</strong> $100-200 monthly (GCP infrastructure)
+              <strong>Operational Costs:</strong> £20-30 monthly (GCP infrastructure)
             </li>
             <li className="mb-2">
               <strong>Infrastructure:</strong> GCP-hosted SQL and user query storage
             </li>
             <li>
-              <strong>ROI Metrics:</strong> Processing efficiency, throughput, satisfaction scores
+              <strong>ROI Metrics:</strong> Processing efficiency, product with a small p
             </li>
           </ul>
         </section>

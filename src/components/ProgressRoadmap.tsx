@@ -20,15 +20,11 @@ const phases: Phase[] = [
   {
     name: 'Crawl',
     emoji: '🐛',
-    description: 'Building core functionality and establishing baseline performance',
-    progress: 30,
+    description: 'The product is not a complete end to end Data Analyst. Building core functionality, defining scope and taking feedback',
+    progress: 40,
     current: true,
     milestones: [
-      {
-        title: 'Page Scanner implementation',
-        completed: true,
-        description: 'Automated identification of page components and events'
-      },
+
       {
         title: 'Basic NL2SQL functionality',
         completed: true,
@@ -40,25 +36,14 @@ const phases: Phase[] = [
         description: 'Minimal UI for data analysts and stakeholders'
       },
       {
-        title: 'Enhance NL2SQL for complex query handling',
+        title: 'Showcasing and demoing the MVP',
         completed: false,
-        description: 'Early exploration of advanced queries for future-proofing'
+        description: 'Minimal UI for data analysts and stakeholders'
       },
-      {
-        title: 'Connect Page Scanner with NL2SQL for GA4 event detection',
-        completed: false,
-        description: 'Integration of scanner outputs with query logic'
-      },
-      {
-        title: 'Conduct performance testing & define baseline metrics',
-        completed: false,
-        description: 'Test speed, accuracy, and establish baseline metrics'
-      },
-      {
-        title: 'Pilot concurrency & parallelization',
-        completed: false,
-        description: 'Test handling of multiple simple queries simultaneously'
-      },
+      { title: 'Provide a demo link', completed: false, description: "Provide an internal link with authentication required" },
+
+      
+ 
       {
         title: 'Gather internal feedback',
         completed: false,
@@ -66,6 +51,43 @@ const phases: Phase[] = [
       }
     ],
   },
+
+  {
+    name: 'Crawl 2',
+    emoji: '🦋',
+    description: 'Refinement of feature list to ensure stability and re-usability',
+    progress: 0,
+    current: false,
+    milestones: [
+
+      {
+        title: 'Complex NL2SQL functionality',
+        completed: true,
+        description: 'Initial version for simple queries (e.g., CTR analysis)'
+      },
+      {
+        title: 'Refinement of user interface',
+        completed: true,
+        description: 'Expand the UI based on feedback and further requirements'
+      },
+      {
+        title: 'Continue to demo and showcase the MVP',
+        completed: false,
+        description: 'Showcase the demo to those interested'
+      },
+      {
+        title: '[Technical] ',
+        completed: false,
+        description: 'Showcase the demo to those interested'
+      },
+      {
+        title: '[Technical] Gathering GA4 events to enchance SQL generation',
+        completed: false,
+        description: 'Automated identification of page components and events'
+      },
+    ],
+  },
+
   {
     name: 'Walk',
     emoji: '🚶',
@@ -73,7 +95,17 @@ const phases: Phase[] = [
     progress: 0,
     current: false,
     milestones: [
-      { title: 'Internal deployment and testing', completed: false },
+      {
+        title: 'Enhance NL2SQL for complex query handling',
+        completed: false,
+        description: 'Early exploration of advanced queries for future-proofing'
+      },
+      {
+        title: 'Conduct performance testing & define baseline metrics',
+        completed: false,
+        description: 'Test speed, accuracy, and establish baseline metrics'
+      },
+      { title: 'Internal deployment and testing', completed: false, description: 'Work closely with the DevOps team to optimise GCP architecture' },
       { title: 'User feedback collection', completed: false },
       { title: 'System refinement', completed: false },
     ],

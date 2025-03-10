@@ -1,22 +1,29 @@
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { Copy } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import clsx from 'clsx';
 import type { Message } from '../types';
 
 interface ChatMessageProps {
   message: Message;
+  onCheckQuery?: (query: string) => void;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, onCheckQuery }: ChatMessageProps) {
   const [copied, setCopied] = useState(false);
 
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Function to detect if content is SQL
+  const isSqlContent = (content: string) => {
+    return content.trim().toUpperCase().startsWith('SELECT') || 
+           content.trim().toUpperCase().startsWith('WITH');
   };
 
   return (
@@ -71,6 +78,22 @@ export function ChatMessage({ message }: ChatMessageProps) {
           {message.content}
         </ReactMarkdown>
       </div>
+
+      {/* Check Query Button - only show for assistant SQL messages */}
+      {message.role === 'assistant' && 
+       message.type === 'nl2sql' && 
+       isSqlContent(message.content) && 
+       onCheckQuery && (
+        <div className="mt-4">
+          <button
+            onClick={() => onCheckQuery(message.content)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors"
+          >
+            <Check className="w-4 h-4" />
+            Check Query and Execute
+          </button>
+        </div>
+      )}
     </div>
   );
 }
