@@ -18,6 +18,8 @@ const VALID_CREDENTIALS = {
   password: 'PinkPanther9988'
 };
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://5c66-35-210-217-224.ngrok-free.app';
+
 function App() {
   // Authentication state
   const [auth, setAuth] = useState({
@@ -107,15 +109,15 @@ function App() {
       if (activeTab === 'nl2sql') {
         if (!nl2sqlSessionId) {
           // First message: use /query endpoint
-          endpoint = 'http://127.0.0.1:8000/query';
+          endpoint = `${API_BASE_URL}/query`;
           payload = { query: content };
         } else {
           // Follow-up message: use /followup endpoint
-          endpoint = 'http://127.0.0.1:8000/followup';
+          endpoint = `${API_BASE_URL}/followup`;
           payload = { follow_up_query: content, session_id: nl2sqlSessionId };
         }
       } else if (activeTab === 'ga4') {
-        endpoint = 'http://127.0.0.1:8000/ga4';
+        endpoint = `${API_BASE_URL}/ga4`;
         payload = { message: content };
       }
 

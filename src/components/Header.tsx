@@ -13,7 +13,7 @@ export function Header({ onLogout }: HeaderProps) {
       </div>
       <div className="ml-auto flex items-center gap-4">
         <img 
-          src="https://raw.githubusercontent.com/stackblitz/stackblitz-images/main/itg-logo.png" 
+          src="/itg_logo.png"
           alt="ITG Logo" 
           className="h-8 w-auto"
         />
