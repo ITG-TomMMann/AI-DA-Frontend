@@ -41,8 +41,6 @@ const phases: Phase[] = [
         description: 'Minimal UI for data analysts and stakeholders'
       },
       { title: 'Provide a demo link', completed: false, description: "Provide an internal link with authentication required" },
-
-      
  
       {
         title: 'Gather internal feedback',
@@ -61,22 +59,17 @@ const phases: Phase[] = [
     milestones: [
 
       {
-        title: 'Complex NL2SQL functionality',
-        completed: true,
+        title: '[Technical] Complex NL2SQL functionality',
+        completed: false,
         description: 'Initial version for simple queries (e.g., CTR analysis)'
       },
       {
-        title: 'Refinement of user interface',
-        completed: true,
+        title: '[Technical] Refinement of user interface',
+        completed: false,
         description: 'Expand the UI based on feedback and further requirements'
       },
       {
-        title: 'Continue to demo and showcase the MVP',
-        completed: false,
-        description: 'Showcase the demo to those interested'
-      },
-      {
-        title: '[Technical] ',
+        title: '[Technical] Implement cost assessment and query execution',
         completed: false,
         description: 'Showcase the demo to those interested'
       },
@@ -95,6 +88,17 @@ const phases: Phase[] = [
     progress: 0,
     current: false,
     milestones: [
+      {
+        title: 'QA Testing',
+        completed: false,
+        description: 'Set QA standards'
+      },
+      {
+        title: 'Write an expanded business case, outlining change management and risk mitigation ',
+        completed: false,
+        description: 'Go through the necessary steps of making this official'
+      },
+
       {
         title: 'Enhance NL2SQL for complex query handling',
         completed: false,

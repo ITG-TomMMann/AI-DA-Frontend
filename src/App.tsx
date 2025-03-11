@@ -7,27 +7,9 @@ import { LoadingIndicator } from './components/LoadingIndicator';
 import { ProgressRoadmap } from './components/ProgressRoadmap';
 import { TabSelector } from './components/TabSelector';
 import { Summary } from './components/Summary';
-import { Login } from './components/Login';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import type { Message, ChatState, ChatType } from './types';
 
-// In a real application, you would store these credentials in a secure backend
-// This is just for demonstration purposes
-const VALID_CREDENTIALS = {
-  username: 'admin',
-  password: 'PinkPanther9988'
-};
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://5c66-35-210-217-224.ngrok-free.app';
-
 function App() {
-  // Authentication state
-  const [auth, setAuth] = useState({
-    isAuthenticated: false,
-    isLoading: false,
-    error: null as string | null
-  });
-
   // Start with the 'summary' tab by default
   const [activeTab, setActiveTab] = useState<ChatType>('summary');
   const [state, setState] = useState<ChatState>({
@@ -44,46 +26,9 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Check if user is already authenticated (from local storage)
-  useEffect(() => {
-    const isAuth = localStorage.getItem('isAuthenticated') === 'true';
-    setAuth(prev => ({ ...prev, isAuthenticated: isAuth }));
-  }, []);
-
   useEffect(() => {
     scrollToBottom();
   }, [state.messages]);
-
-  const handleLogin = (username: string, password: string) => {
-    setAuth(prev => ({ ...prev, isLoading: true, error: null }));
-    
-    // Simulate API call with timeout
-    setTimeout(() => {
-      if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
-        localStorage.setItem('isAuthenticated', 'true');
-        setAuth({
-          isAuthenticated: true,
-          isLoading: false,
-          error: null
-        });
-      } else {
-        setAuth({
-          isAuthenticated: false,
-          isLoading: false,
-          error: 'Invalid username or password'
-        });
-      }
-    }, 1000);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    setAuth({
-      isAuthenticated: false,
-      isLoading: false,
-      error: null
-    });
-  };
 
   const handleSendMessage = async (content: string) => {
     const newMessage: Message = {
@@ -105,20 +50,20 @@ function App() {
       let endpoint = '';
       let payload: any = {};
 
-      // Endpoint logic for nl2sql and ga4
+      // Endpoint logic for data analysis (nl2sql)
       if (activeTab === 'nl2sql') {
         if (!nl2sqlSessionId) {
           // First message: use /query endpoint
-          endpoint = `${API_BASE_URL}/query`;
+          endpoint = 'https://5c66-35-210-217-224.ngrok-free.app/query';
           payload = { query: content };
         } else {
           // Follow-up message: use /followup endpoint
-          endpoint = `${API_BASE_URL}/followup`;
+          endpoint = 'https://5c66-35-210-217-224.ngrok-free.app/followup';
           payload = { follow_up_query: content, session_id: nl2sqlSessionId };
         }
-      } else if (activeTab === 'ga4') {
-        endpoint = `${API_BASE_URL}/ga4`;
-        payload = { message: content };
+      } else {
+        // This shouldn't happen, but just in case
+        throw new Error('Invalid tab selection');
       }
 
       const response = await fetch(endpoint, {
@@ -128,7 +73,7 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to get response from ${activeTab.toUpperCase()} assistant`);
+        throw new Error(`Failed to get response from Data Analysis assistant`);
       }
 
       const data = await response.json();
@@ -163,6 +108,59 @@ function App() {
     }
   };
 
+  // Execute SQL query
+  const handleExecuteQuery = async (sql: string) => {
+    setState(prev => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+    }));
+
+    try {
+      const endpoint = 'https://5c66-35-210-217-224.ngrok-free.app/analysis';
+      const payload = { 
+        sql,
+        session_id: nl2sqlSessionId
+      };
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to execute query');
+      }
+
+      const data = await response.json();
+      
+      // Create a message with the results
+      const resultMessage: Message = {
+        id: Date.now().toString(),
+        content: data.results 
+          ? `## Query Results\n\`\`\`json\n${JSON.stringify(data.results, null, 2)}\n\`\`\``
+          : 'Query executed successfully, but no results were returned.',
+        role: 'assistant',
+        timestamp: new Date(),
+        type: activeTab,
+      };
+
+      setState(prev => ({
+        ...prev,
+        messages: [...prev.messages, resultMessage],
+        isLoading: false,
+      }));
+    } catch (error) {
+      console.error(error);
+      setState(prev => ({
+        ...prev,
+        isLoading: false,
+        error: 'Failed to execute query. Please try again.',
+      }));
+    }
+  };
+
   // Clear both the chat messages and the nl2sql session
   const handleClearChat = () => {
     setState({
@@ -178,21 +176,9 @@ function App() {
     message => message.type === activeTab
   );
 
-  // If not authenticated, show login page
-  if (!auth.isAuthenticated) {
-    return (
-      <Login
-        onLogin={handleLogin}
-        error={auth.error}
-        isLoading={auth.isLoading}
-      />
-    );
-  }
-
-  // Authenticated view
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      <Header onLogout={handleLogout} />
+      <Header />
       <div className="flex flex-1 overflow-hidden">
         <ProgressRoadmap />
         <main className="flex-1 flex flex-col">
@@ -205,14 +191,18 @@ function App() {
                 {filteredMessages.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-gray-500">
                     <p>
-                      Start a conversation with your {activeTab === 'nl2sql' ? 'SQL Query' : 'GA4 Event'} Assistant
+                      Start a conversation with your Data Analysis Assistant
                     </p>
                   </div>
                 ) : (
                   <>
                     <div className="max-w-4xl mx-auto w-full">
                       {filteredMessages.map(message => (
-                        <ChatMessage key={message.id} message={message} />
+                        <ChatMessage 
+                          key={message.id} 
+                          message={message} 
+                          onExecuteQuery={activeTab === 'nl2sql' ? handleExecuteQuery : undefined}
+                        />
                       ))}
                       {state.isLoading && <LoadingIndicator />}
                       {state.error && (
@@ -243,11 +233,7 @@ function App() {
                 <ChatInput
                   onSendMessage={handleSendMessage}
                   disabled={state.isLoading}
-                  placeholder={
-                    activeTab === 'nl2sql'
-                      ? 'Ask a question about your data...'
-                      : 'Ask about GA4 events and tracking...'
-                  }
+                  placeholder="Ask a question about your data..."
                 />
               </div>
             </div>
