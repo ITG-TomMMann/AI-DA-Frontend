@@ -13,7 +13,7 @@ export function Header({ onLogout }: HeaderProps) {
       </div>
       <div className="ml-auto flex items-center gap-4">
         <img 
-          src="/itg_logo.png"
+          src="https://storage.googleapis.com/ai-data-analyst-static-site/Screenshot%202025-03-10%20183056.png"
           alt="ITG Logo" 
           className="h-8 w-auto"
         />
