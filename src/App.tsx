@@ -15,10 +15,9 @@ import type { Message, ChatState, ChatType } from './types';
 // This is just for demonstration purposes
 const VALID_CREDENTIALS = {
   username: 'admin',
-  password: 'PinkPanther9988'
+  password: 'a'
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://5c66-35-210-217-224.ngrok-free.app';
 
 function App() {
   // Authentication state
@@ -109,15 +108,15 @@ function App() {
       if (activeTab === 'nl2sql') {
         if (!nl2sqlSessionId) {
           // First message: use /query endpoint
-          endpoint = `${API_BASE_URL}/query`;
+          endpoint = `https://5c66-35-210-217-224.ngrok-free.app/query`;
           payload = { query: content };
         } else {
           // Follow-up message: use /followup endpoint
-          endpoint = `${API_BASE_URL}/followup`;
+          endpoint = `https://5c66-35-210-217-224.ngrok-free.app/followup`;
           payload = { follow_up_query: content, session_id: nl2sqlSessionId };
         }
       } else if (activeTab === 'ga4') {
-        endpoint = `${API_BASE_URL}/ga4`;
+        endpoint = `https://5c66-35-210-217-224.ngrok-free.app//ga4`;
         payload = { message: content };
       }
 
