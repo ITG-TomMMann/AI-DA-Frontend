@@ -1,4 +1,4 @@
-export type ChatType = 'nl2sql' | 'ga4' | 'summary' | 'data-analysis';
+export type ChatType = 'assistant' | 'nl2sql' | 'ga4' | 'existingAnalysis' | 'documentation';
 
 export interface Message {
   id: string;

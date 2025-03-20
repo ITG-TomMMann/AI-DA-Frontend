@@ -1,5 +1,6 @@
-import { Database, Activity, FileText, BarChart } from 'lucide-react';
+import { Database, Activity, FileText, HelpCircle, BarChart2 } from 'lucide-react';
 import clsx from 'clsx';
+import { useTheme } from '../ThemeContext';
 import type { ChatType } from '../types';
 
 interface TabSelectorProps {
@@ -8,19 +9,27 @@ interface TabSelectorProps {
 }
 
 export function TabSelector({ activeTab, onTabChange }: TabSelectorProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   return (
-    <div className="flex border-b border-gray-200">
+    <div className={clsx(
+      "flex border-b",
+      isDark ? "border-gray-700" : "border-gray-200"
+    )}>
       <button
-        onClick={() => onTabChange('summary')}
+        onClick={() => onTabChange('assistant')}
         className={clsx(
           'flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
-          activeTab === 'summary'
+          activeTab === 'assistant'
             ? 'border-pink-600 text-pink-600'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            : isDark 
+              ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
         )}
       >
-        <FileText className="w-4 h-4" />
-        Summary
+        <HelpCircle className="w-4 h-4" />
+        Enzo the Assistant
       </button>
       <button
         onClick={() => onTabChange('nl2sql')}
@@ -28,7 +37,9 @@ export function TabSelector({ activeTab, onTabChange }: TabSelectorProps) {
           'flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
           activeTab === 'nl2sql'
             ? 'border-pink-600 text-pink-600'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            : isDark 
+              ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
         )}
       >
         <Database className="w-4 h-4" />
@@ -40,23 +51,41 @@ export function TabSelector({ activeTab, onTabChange }: TabSelectorProps) {
           'flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
           activeTab === 'ga4'
             ? 'border-pink-600 text-pink-600'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            : isDark 
+              ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
         )}
       >
         <Activity className="w-4 h-4" />
         GA4 Event Assistant
       </button>
       <button
-        onClick={() => onTabChange('data-analysis')}
+        onClick={() => onTabChange('existingAnalysis')}
         className={clsx(
           'flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
-          activeTab === 'data-analysis'
+          activeTab === 'existingAnalysis'
             ? 'border-pink-600 text-pink-600'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            : isDark 
+              ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
         )}
       >
-        <BarChart className="w-4 h-4" />
-        Data Analysis
+        <BarChart2 className="w-4 h-4" />
+        Existing Analysis
+      </button>
+      <button
+        onClick={() => onTabChange('documentation')}
+        className={clsx(
+          'flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
+          activeTab === 'documentation'
+            ? 'border-pink-600 text-pink-600'
+            : isDark 
+              ? 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+        )}
+      >
+        <FileText className="w-4 h-4" />
+        Documentation
       </button>
     </div>
   );

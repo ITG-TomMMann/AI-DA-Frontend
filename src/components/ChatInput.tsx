@@ -1,5 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Send } from 'lucide-react';
+import { useTheme } from '../ThemeContext';
+import clsx from 'clsx';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -9,6 +11,8 @@ interface ChatInputProps {
 
 export function ChatInput({ onSendMessage, disabled, placeholder }: ChatInputProps) {
   const [input, setInput] = useState('');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -21,7 +25,10 @@ export function ChatInput({ onSendMessage, disabled, placeholder }: ChatInputPro
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-t border-gray-200 p-4 bg-white"
+      className={clsx(
+        "p-4",
+        isDark ? "bg-gray-800" : "bg-white"
+      )}
     >
       <div className="flex gap-4">
         <input
@@ -29,7 +36,12 @@ export function ChatInput({ onSendMessage, disabled, placeholder }: ChatInputPro
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder || "Type your message..."}
-          className="flex-1 min-w-0 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+          className={clsx(
+            "flex-1 min-w-0 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent",
+            isDark 
+              ? "bg-gray-700 text-white border-gray-600 placeholder-gray-400" 
+              : "bg-white text-gray-900 border border-gray-300 placeholder-gray-500"
+          )}
           disabled={disabled}
         />
         <button

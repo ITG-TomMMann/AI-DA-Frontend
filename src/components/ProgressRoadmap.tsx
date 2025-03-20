@@ -22,7 +22,7 @@ const phases: Phase[] = [
     emoji: '🐛',
     description: 'The product is not a complete end to end Data Analyst. Building core functionality, defining scope and taking feedback',
     progress: 40,
-    current: true,
+    current: false,
     milestones: [
 
       {
@@ -37,14 +37,14 @@ const phases: Phase[] = [
       },
       {
         title: 'Showcasing and demoing the MVP',
-        completed: false,
+        completed: true,
         description: 'Minimal UI for data analysts and stakeholders'
       },
       { title: 'Provide a demo link', completed: false, description: "Provide an internal link with authentication required" },
  
       {
         title: 'Gather internal feedback',
-        completed: false,
+        completed: true,
         description: 'Collect user input to refine prompts and UI'
       }
     ],
@@ -55,7 +55,7 @@ const phases: Phase[] = [
     emoji: '🦋',
     description: 'Refinement of feature list to ensure stability and re-usability',
     progress: 0,
-    current: false,
+    current: true,
     milestones: [
 
       {
